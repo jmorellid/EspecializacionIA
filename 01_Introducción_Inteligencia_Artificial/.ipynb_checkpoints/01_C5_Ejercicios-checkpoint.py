@@ -130,10 +130,6 @@ w = w_mini[:,0]
 sns.lineplot(x=[a,b], y=[-a*w[0]/w[1]-w[2]/w[1], -b*w[0]/w[1]-w[2]/w[1]])
 sns.scatterplot(x=X_test[:,1], y=X_test[:,0], hue=colors)
 
-"""
-¿porqué no me delimita correctamente el límite de decisión?
-"""
-
 plt.ylabel('y')
 plt.xlabel('X')
 
