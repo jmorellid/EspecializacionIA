@@ -5,6 +5,46 @@ import seaborn as sns
 import os
 
 
+# def k_folds_model(X_train, y_train, model, error=MSE(), k=5):
+#     '''
+#     Trains <model>, <k> times, each time using 1/<k>*sample as test, and
+#     the rest as training.
+#     Each of the <k> times, computes the <error> and keeps the log.
+#
+#     INPUT
+#     ---------------------------
+#     X_train <np.array> Training features
+#     Y_train <np.array> Array of outcomes
+#     model <class.BaseModel> Model for training
+#     error <class.BaseMetric> Error to compute
+#     k <int> Number of folds
+#
+#     OUTPUT
+#     ---------------------------
+#     mean_error <float> Mean <error> computed over the <k> folds.
+#     '''
+#
+#
+#     model = model
+#     error = error
+#
+#     chunk_size = int(len(X_train) / k)
+#     error_list = []
+#     for i in range(0, len(X_train), chunk_size):
+#         end = i + chunk_size if i + chunk_size <= len(X_train) else len(X_train)
+#         new_X_valid = X_train[i: end]
+#         new_y_valid = y_train[i: end]
+#         new_X_train = np.concatenate([X_train[: i], X_train[end:]])
+#         new_y_train = np.concatenate([y_train[: i], y_train[end:]])
+#
+#         model.fit(new_X_train, new_y_train)
+#         prediction = model.predict(new_X_valid)
+#         error_list.append(error(new_y_valid, prediction))
+#
+#     mean_error = np.mean(error_list)
+#
+#     return mean_error
+
 def mini_batch_gradient_descent(X, y, alpha=0.01, epochs=100, b=15):
     n = X.shape[0]
     m = X.shape[1]
@@ -111,19 +151,21 @@ y_test = test[:, 2].reshape(test.shape[0], 1)
 X = np.vstack((X_train.T, np.ones(len(X_train)).reshape(1,len(X_train)))).T
 y = y_test
 
-w_stocha = stochastic_gradient_descent(X, y_train, alpha=0.001, epochs=100000)
+w_stocha = stochastic_gradient_descent(X, y_train, alpha=0.001, epochs=100000).T
 w_mini = mini_batch_gradient_descent(X, y_train, alpha=0.001, epochs=100000)
 print(w_stocha, w_mini)
+
+w = w_stocha
 
 X = np.vstack((X_test.T, np.ones(len(X_test)).reshape(1,len(X_test)))).T
 y_pred, y_proba = log_reg_predict(X, w, threshold=0.6)
 
-print(w, y_pred.T, y_test.T, np.sum(y_pred == y_test))
+print(w, y_pred.T, y_test.T, np.sum(y_pred == y_test.T))
 
 colors = np.apply_along_axis(lambda x: 'red' if x == 1 else 'blue',1 ,y_test)
 
 a=30
-b=60
+b=100
 
 w = w_mini[:,0]
 
