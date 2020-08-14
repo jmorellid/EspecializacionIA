@@ -1,3 +1,5 @@
+import numpy as np
+
 class BaseModel(object):
 
     def __init__(self):
@@ -135,45 +137,76 @@ class Kmeans(BaseModel):
     def predict(self, X):
 
         centroids = self.model
-        distance = np.sqrt(np.sum((centroids[:, None] - X) * * 2, axis=2))
+        distance = np.sqrt(np.sum((centroids[:, None] - X) ** 2, axis=2))
         centroid_with_min_distance = np.argmin(distance, axis=0)
 
         return centroid_with_min_distance
 
-class LogisticRegression(BaseModel):
 
+class LogisticRegression(BaseModel):
     def fit(self, X, y, alpha=0.01, epochs=100, b=15):
         n = X.shape[0]
         m = X.shape[1]
 
         W = np.random.randint(0, 10, size=[m, 1])
 
-        for i in range(epochs):
+        W = np.random.randn(m).reshape(m, 1)
 
-            idx = np.random.permutation(n)
-            X = X[idx]
-            y = y[idx]
+        for i in range(amt_epochs):
+            idx = np.random.permutation(X.shape[0])
+            X_train = X[idx]
+            y_train = y[idx]
 
-            batch_size = int(n / b)
+            batch_size = int(len(X_train) / b)
+            for i in range(0, len(X_train), batch_size):
+                end = i + batch_size if i + batch_size <= len(X_train) else len(X_train)
+                batch_X = X_train[i: end]
+                batch_y = y_train[i: end]
 
-            for j in range(0, n, batch_size):
-                end_batch = j + batch_size if batch_size + j <= n else n
+                exponent = np.sum(np.transpose(W) * batch_X, axis=1)
+                prediction = 1 / (1 + np.exp(-exponent))
+                error = prediction.reshape(-1, 1) - batch_y.reshape(-1, 1)
 
-                X_batch = X[j:end_batch, :]
-                y_batch = y[j:end_batch, :]
+                grad_sum = np.sum(error * batch_X, axis=0)
+                grad_mul = 1 / b * grad_sum
+                gradient = np.transpose(grad_mul).reshape(-1, 1)
 
-                expo = np.exp(- np.matmul(X_batch, W))
-                sigmoid = 1 / (1 + expo)
-                h = (sigmoid - y_batch)
-                gradient = h * X_batch
+                W = W - (lr * gradient)
 
-                grad_sum = np.sum(gradient, axis=0)
-                grad_mul = -alpha / (batch_size) * grad_sum
-
-                W = W + grad_mul.reshape(-1, 1)
         self.model = W
-        return W
 
+        return W
+    # def fit(self, X, y, alpha=0.01, epochs=100, b=15):
+    #     n = X.shape[0]
+    #     m = X.shape[1]
+    #
+    #     W = np.random.randint(0, 10, size=[m, 1])
+    #
+    #     for i in range(epochs):
+    #
+    #         idx = np.random.permutation(n)
+    #         X = X[idx]
+    #         y = y[idx]
+    #
+    #         batch_size = int(n / b)
+    #
+    #         for j in range(0, n, batch_size):
+    #             end_batch = j + batch_size if batch_size + j <= n else n
+    #
+    #             X_batch = X[j:end_batch, :]
+    #             y_batch = y[j:end_batch, :]
+    #
+    #             expo = np.exp(- np.matmul(X_batch, W))
+    #             sigmoid = 1 / (1 + expo)
+    #             h = (sigmoid - y_batch)
+    #             gradient = h * X_batch
+    #
+    #             grad_sum = np.sum(gradient, axis=0)
+    #             grad_mul = -alpha / (batch_size) * grad_sum
+    #
+    #             W = W + grad_mul.reshape(-1, 1)
+    #     self.model = W
+    #     return W
 
     def fit_stocha(self, X, y, alpha=0.01, epochs=1000):
         n = X.shape[0]
@@ -188,7 +221,7 @@ class LogisticRegression(BaseModel):
             y = y[idx]
 
             for j in range(0, n):
-                expo = np.exp(- np.matmul(X[j], W))
+                expo = np.exp(-W.T * X[j])
                 sigmoid = 1 / (1 + expo)
                 h = (sigmoid - y[j])
                 gradient = h * X[j]
@@ -198,7 +231,8 @@ class LogisticRegression(BaseModel):
         return W
 
 
-    def logreg_predict(self, X, W, threshold=0.5):
+    def predict(self, X, threshold=0.5):
+        W = self.model
         prediction = 1 / (1 + np.exp(-np.matmul(X, W)))
 
         y_proba = prediction

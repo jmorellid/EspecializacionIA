@@ -1,10 +1,11 @@
+import numpy as np
 
 def sinthetic_data(mean, std, SIZE, n_clusters , separation):
     sint_data = np.zeros([SIZE, n_clusters])
     classes = np.zeros([SIZE])
     for i in range(n_clusters):
-        from_ = i * int(SIZ E /n_clusters)
-        to_ = i * int(SIZ E /n_clusters) + int(SIZ E /n_clusters)
+        from_ = i * int(SIZE /n_clusters)
+        to_ = i * int(SIZE /n_clusters) + int(SIZE /n_clusters)
         sint_data[from_:to_ ,i] = separation[i] * np.array([np.random.normal(mean, std)])
         classes[from_:to_] = i + 1
     sint_data += np.random.normal(0, 3, size=sint_data.shape)
@@ -22,10 +23,10 @@ def replace_nans_colmean(data):
 
 class Data(object):
 
-    def __init__(self, path, structure, start_col_x=0, final_col_x):
+    def __init__(self, path, structure, start_col_x=0, final_col_x=-1):
         self.dataset = self.build_dataset(path, structure, start_col_x, final_col_x)
         self.structure = structure
-        self.start_col_x = start_col_x\
+        self.start_col_x = start_col_x
         self.final_col_x = final_col_x
 
     def split(self, percentage):
@@ -44,9 +45,9 @@ class Data(object):
         # slice dataset
         train_data = data_total[train_idx]
         test_data = data_total[test_idx]
-
-        x_keys = [x for x in structuredArr.dtype.fields.keys()][:-1]
-        y_key = [x for x in structuredArr.dtype.fields.keys()][-1:]
+        print(data_total.dtype.fields.keys())
+        x_keys = [x for x in data_total.dtype.fields.keys()][:-1]
+        y_key = [x for x in data_total.dtype.fields.keys()][-1:]
 
         X_train = train_data[x_keys]
         X_test = test_data[x_keys]
@@ -55,7 +56,7 @@ class Data(object):
 
         return X_train, X_test, y_train, y_test
 
-    def build_dataset(self, path, structure, start_col_x=0, final_col_x):
+    def build_dataset(self, path, structure, start_col_x=0, final_col_x=-1):
         """
         Takes a numpy structured array, a filepath and the columns where the features start and finish.
         It takes a single target value column
@@ -70,9 +71,8 @@ class Data(object):
         """
         # load numpy array from disk using a generator
 
-        with open(path, encoding="utf8") as file:
-            data_gen = ((line.split(',')[start_col_x:final_col_x+1], line.split(',')[final_col_x+1])
-                        for line in file if not line.split(',')[1][2].isalpha())
+        with open(path, encoding="utf-8-sig") as file:
+            data_gen = [tuple(line.strip('\n').replace('"', '').split(',')) for line in file if not line.split(',')[1][2].isalpha()]
             data_total = np.fromiter(data_gen, structure)
 
         return data_total
@@ -154,3 +154,33 @@ def adapt_multidimensional_data_order(X, order, structured=False):
                 X_new = np.hstack([X_new, adapt_data_order(X[key].reshape(-1,1), order)])
     return X_new
 
+
+def train_test_split(X, y, percentage):
+        # divides the dataset by permutating, masking and slicing into train and split
+        SIZE = X.shape[0]
+        idx = np.arange(0, SIZE)
+
+        # permutate
+        perm_idx = np.random.permutation(idx)
+
+        # generate index slice
+        train_idx = perm_idx[:int(SIZE * percentage)]
+        test_idx = perm_idx[int(SIZE * percentage):]
+
+        # slice dataset
+
+        X_train = X[train_idx]
+        X_test = X[test_idx]
+        y_train = y[train_idx].reshape(-1,1)
+        y_test = y[test_idx].reshape(-1,1)
+
+        return X_train, X_test, y_train, y_test
+
+import sys
+import numpy as np
+sys.path.insert(1, '00_Especialización_IA/EspecializacionIA/01_Introducción_Inteligencia_Artificial')
+from IIA_preprocessing import Data
+X = Data
+filepath = 'C:/Users/jota_/00_Especialización_IA/00_Recursos/01_DataSets/income.data.csv'
+Structure = np.dtype([('index', np.float32), ('X', np.float32), ('y', np.float32)])
+data = X(filepath, Structure)
