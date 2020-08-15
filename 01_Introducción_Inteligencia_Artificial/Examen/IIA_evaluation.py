@@ -75,10 +75,10 @@ def k_folds_model(X_train, y_train, model, error=MSE, k=5):
     '''
 
     model = model
-    error = error()
 
     chunk_size = int(len(X_train) / k)
     error_list = []
+    prediction_list = []
     for i in range(0, len(X_train), chunk_size):
         end = i + chunk_size if i + chunk_size <= len(X_train) else len(X_train)
         new_X_valid = X_train[i: end]
@@ -88,11 +88,10 @@ def k_folds_model(X_train, y_train, model, error=MSE, k=5):
 
         model.fit(new_X_train, new_y_train)
         prediction = model.predict(new_X_valid)
-        error_list.append(error(new_y_valid, prediction))
+        error_list.append(error(new_y_valid, prediction)())
+        prediction_list.append(model.model)
 
-    error = np.mean(error_list)
-
-    return error
+    return np.mean(error_list)
 
 
 
