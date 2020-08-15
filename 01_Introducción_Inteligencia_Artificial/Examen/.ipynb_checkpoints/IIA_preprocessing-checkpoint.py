@@ -113,7 +113,7 @@ def adapt_data_order(X, order):
     ndarray
     """
     X_repeat_order = np.repeat(X, order, axis=1)
-    orders = np.array(range(1, order+1))
+    orders = np.array(range(1, order + 1))
     X_order = np.apply_along_axis(np.power, 0, X_repeat_order.T, orders).T
 
     return X_order

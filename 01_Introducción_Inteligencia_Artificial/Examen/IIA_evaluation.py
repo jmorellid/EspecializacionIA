@@ -97,69 +97,69 @@ def k_folds_model(X_train, y_train, model, error=MSE, k=5):
 
 
 ## llamar todas las métrics =>[cls(y_test.reshape(-1,1), y_predict)() for cls in BaseMetric.__subclasses__() if cls != MSE]
-
-Axes = {0:'X', 1:'Y', 2:'Z'}
-
-for i,j in [(0,1), (1,2), (0,2)]:
-    fig0, ax = plt.subplots(figsize=(10,10))
-    ax.plot(pred_Gauss[:,i],pred_Gauss[:,j],color='blue',label='Prediction',zorder=3,lw=2)
-    ax.plot(pos_gauss[:,i], pos_gauss[:,j], color='grey',ls='--',alpha=0.5,label='Measurement',zorder=1)
-    ax.plot(pos[:,i], pos[:,j],color='green',ls='-',alpha=0.5,label='Real',lw=1,zorder=2)
-    ax.legend()
-
-    axes = [Axes.get(Ax) for Ax in [i, j]]
-    ax.set_title('Comparison between {} predicted, measured and real trajectories'.format(axes))
-
-    plt.show()
-
-# LINEAR REGRESSION MODELS!!
-
-evaluation = MSE()
-model = model()
-order = 5
-eval_array = np.zeros(order)
-models = np.array([])
-
-y_models = []
-
-idx = np.argsort(X_test)
-
-for i in range(1, order):
-    X_expand = adapt_data_order(X, order)
-    model.fit(X_expand, y_train)
-    y_pred = model.predict(X_test)
-
-    eval_array[i] = evaluation(y_test, y_pred)
-
-    models = np.append([models, i])
-    y_models = np.append([y_models, y_pred], axis=0)
-
-    plt.plot(X_test[idx], y_pred[idx], label=f'Model Order {i}, Linear regression')
-
-plt.legend()
-plt.scatter(X_test[idx], y_test[idx], label=f'Model Order {i}, Linear regression')
-plt.title('Linear Regression!')
-
-
-# LOGISTIC REGRESSION MODEL
-
-colors = np.apply_along_axis(lambda x: 'red' if x == 1 else 'blue',1 ,y_test)
-
-a=30
-b=100
-
-w = w_mini[:,0]
-
-sns.lineplot(x=[a,b], y=[-a*w[0]/w[1]-w[2]/w[1], -b*w[0]/w[1]-w[2]/w[1]])
-sns.scatterplot(x=X_test[:,1], y=X_test[:,0], hue=colors)
-
-"""
-¿porqué no me delimita correctamente el límite de decisión?
-"""
-
-plt.ylabel('y')
-plt.xlabel('X')
-
-plt.title('Logistic Regression Model')
-plt.tight_layout()
-plt.show()
+#
+# Axes = {0:'X', 1:'Y', 2:'Z'}
+#
+# for i,j in [(0,1), (1,2), (0,2)]:
+#     fig0, ax = plt.subplots(figsize=(10,10))
+#     ax.plot(pred_Gauss[:,i],pred_Gauss[:,j],color='blue',label='Prediction',zorder=3,lw=2)
+#     ax.plot(pos_gauss[:,i], pos_gauss[:,j], color='grey',ls='--',alpha=0.5,label='Measurement',zorder=1)
+#     ax.plot(pos[:,i], pos[:,j],color='green',ls='-',alpha=0.5,label='Real',lw=1,zorder=2)
+#     ax.legend()
+#
+#     axes = [Axes.get(Ax) for Ax in [i, j]]
+#     ax.set_title('Comparison between {} predicted, measured and real trajectories'.format(axes))
+#
+#     plt.show()
+#
+# # LINEAR REGRESSION MODELS!!
+#
+# evaluation = MSE()
+# model = model()
+# order = 5
+# eval_array = np.zeros(order)
+# models = np.array([])
+#
+# y_models = []
+#
+# idx = np.argsort(X_test)
+#
+# for i in range(1, order):
+#     X_expand = adapt_data_order(X, order)
+#     model.fit(X_expand, y_train)
+#     y_pred = model.predict(X_test)
+#
+#     eval_array[i] = evaluation(y_test, y_pred)
+#
+#     models = np.append([models, i])
+#     y_models = np.append([y_models, y_pred], axis=0)
+#
+#     plt.plot(X_test[idx], y_pred[idx], label=f'Model Order {i}, Linear regression')
+#
+# plt.legend()
+# plt.scatter(X_test[idx], y_test[idx], label=f'Model Order {i}, Linear regression')
+# plt.title('Linear Regression!')
+#
+#
+# # LOGISTIC REGRESSION MODEL
+#
+# colors = np.apply_along_axis(lambda x: 'red' if x == 1 else 'blue',1 ,y_test)
+#
+# a=30
+# b=100
+#
+# w = w_mini[:,0]
+#
+# sns.lineplot(x=[a,b], y=[-a*w[0]/w[1]-w[2]/w[1], -b*w[0]/w[1]-w[2]/w[1]])
+# sns.scatterplot(x=X_test[:,1], y=X_test[:,0], hue=colors)
+#
+# """
+# ¿porqué no me delimita correctamente el límite de decisión?
+# """
+#
+# plt.ylabel('y')
+# plt.xlabel('X')
+#
+# plt.title('Logistic Regression Model')
+# plt.tight_layout()
+# plt.show()
