@@ -1,6 +1,7 @@
 import numpy as np
 import scipy
 from sklearn.metrics import classification_report
+import matplotlib.pyplot as plt
 
 
 class Layer():
@@ -44,7 +45,6 @@ class FullyConnected(Layer):
 
         self.Z = Z
         self.A = A
-
 
     def backward(self, dZ_f, A_b, W_f):
         dZ = W_f @ dZ_f * self.g(self.Z)
@@ -98,10 +98,13 @@ data = np.loadtxt(PATH, delimiter=',')
 X_raw = data[:,:2].T
 y_raw = data[:,2]
 
-n = len(X_raw)
-b = 2
-lr = 0.5
-epochs = 100000
+metrics = []
+
+n = len(X_raw.T)
+b = 10
+lr = 0.3
+epochs = 10000
+threshold = 0.9
 
 layer_1 = FullyConnected(nodes=3, n_inputs=2, batch=b, lr=lr)
 layer_2 = FullyConnected(nodes=2, n_inputs=3, batch=b, lr=lr)
@@ -136,17 +139,22 @@ for i in range(epochs):
         for layer in n_net:
             layer.update()
 
-for k, layer in enumerate(n_net):
-    if k == 0:
-        layer.forward(X_raw)
-    else:
-        layer.forward(n_net[k-1].A)
+    for k, layer in enumerate(n_net):
+        if k == 0:
+            layer.forward(X_raw)
+        else:
+            layer.forward(n_net[k-1].A)
 
-threshold = 0.9
-y_hat = (outputlayer.Y_hat > 0.7) *1
+    y_pred = (layer.Y_hat > threshold) * 1
+    metrics.append((y_pred == y_raw).sum())
 
-print(classification_report(y_raw, y_hat.flatten()))
 
+print(classification_report( y_raw.flatten() == 1, y_pred.flatten() == 1))
+plt.figure(1)
+plt.scatter(X_raw[0,:], X_raw[1,:], c=y_pred.flatten())
+plt.figure(2)
+plt.plot(1 - np.array(metrics) / 900)
+plt.show()
 
 
 
