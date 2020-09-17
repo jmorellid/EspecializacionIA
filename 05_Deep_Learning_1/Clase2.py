@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+from sklearn.metrics import classification_report
 
 
 class Layer():
@@ -88,23 +89,30 @@ class BinaryOutput(Layer):
         self.b = self.b - self.lr * self.grad_b
 
 
-X_raw = np.array([[0,0,1,1],[0,1,0,1]])
-y_raw = np.array([0,1,1,0])
+# X_raw = np.array([[0,0,1,1],[0,1,0,1]])
+# y_raw = np.array([0,1,1,0])
 
-n = len(X)
+PATH = 'C:/Users/jota_/00_Especialización_IA/EspecializacionIA/00_Datasets/01_Raw/DEEPLEARNING2_train_data.csv'
+
+data = np.loadtxt(PATH, delimiter=',')
+X_raw = data[:,:2].T
+y_raw = data[:,2]
+
+n = len(X_raw)
 b = 2
+lr = 0.5
 epochs = 100000
 
-layer_1 = FullyConnected(nodes=3, n_inputs=2, batch=b, lr=0.1)
-layer_2 = FullyConnected(nodes=2, n_inputs=3, batch=b, lr=0.1)
-outputlayer = BinaryOutput(nodes=1, n_inputs=2, batch=b, lr=0.1)
+layer_1 = FullyConnected(nodes=3, n_inputs=2, batch=b, lr=lr)
+layer_2 = FullyConnected(nodes=2, n_inputs=3, batch=b, lr=lr)
+outputlayer = BinaryOutput(nodes=1, n_inputs=2, batch=b, lr=lr)
 
 n_net = [layer_1, layer_2, outputlayer]
 
 for i in range(epochs):
 
     batch_size = int(n / b)
-    idx_shuffle = np.random.permutation(range(len(X)))
+    idx_shuffle = np.random.permutation(range(n))
     X = X_raw[:, idx_shuffle]
     y = y_raw[idx_shuffle]
 
@@ -134,4 +142,11 @@ for k, layer in enumerate(n_net):
     else:
         layer.forward(n_net[k-1].A)
 
-print(outputlayer.Y_hat)
+threshold = 0.9
+y_hat = (outputlayer.Y_hat > 0.7) *1
+
+print(classification_report(y_raw, y_hat.flatten()))
+
+
+
+
