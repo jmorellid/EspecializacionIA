@@ -158,3 +158,7 @@ plt.show()
 
 
 
+def plot_decision_boundry(X, y, model, step=1000, cmap='Paired'):
+    cmap = plt.get_cmap(cmap)
+
+    xmin
