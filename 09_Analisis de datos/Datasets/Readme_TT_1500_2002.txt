@@ -1,0 +1,67 @@
+Gridded seasonal absolute surface air temperature for Europe 1500-2002:
+
+ORIGINAL REFERENCES: 
+Using the reconstructed data, please cite
+
+Luterbacher, J., Dietrich, D., Xoplaki, E., Grosjean, M., and Wanner, H., 2004:
+European seasonal and annual temperature variability, trends, and extremes since 1500,
+Science 303, 1499-1503 (DOI:10.1126/science.1093877).
+
+Xoplaki, E., Luterbacher, J., Paeth, H., Dietrich, D., Steiner N., Grosjean, M., and Wanner, H., 2005:
+European spring and autumn temperature variability and change of extremes over the last half millennium,
+Geophys. Res. Lett., 32, L15713 (DOI:10.1029/2005GL023424).
+
+---------------------------------------------------------------------
+
+File: TT_Europe_Seasons_1500_2002.New.GDX.gz
+
+Grid: 0.5° x 0.5°  
+
+Spatial area: 25W - 40E und 30 - 70N
+
+Note: the date are valied for a 0.5x0.5deg box. The center of the box is
+always on a xx.25 coordinate	
+
+Time period: Winter 1500 - Autumn 2002 
+
+YearSeason followed by 9100 Gridpoints
+Seasons are given as  13(Winter, DJF), 14(Spring, MAM), 15 (Summer, JJA), 16 (Autumn, SON)
+
+Year1Season1  Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+Year1Season2 Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+.....
+Year1Season4 Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+Year2Season1  Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+....
+.
+Year2Season4 Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+.
+.
+.
+YearendSeason4 Gridpoint1 Gridpoint2 Gridpoint3 Gridpoint4 .....Gridpointy
+
+Therefore, each row consist of year Season and a long string 
+with 9100 gridpoints
+
+Meaning, for each Season all gridpoints on the same latutide,
+one after the other, starting in the NW, ending in the SE.
+
+There are 130 longitudes and 70 latitudes
+
+1st gridpoint  : 70N/25W (centered on: 69.75/24.75W)
+2nd gridpoint  : 70N/24.5W (centered on: 69.75/24.25W) 
+3rd gridpoint  : 70N/24W (centered on: 69.75/23.75W)
+130th gridpoint: 70N/40E (centered on: 69.75/39.75E)
+131th gridpoint: 69.5N/25W (centered on: 69.25/24.75W)
+...
+...
+9100th gridpoint (last one): 35N/40E (centered on: 35.25/39.75E)
+
+Note, only values over land, values over water are set to NA
+ All the seasonly surface air temperature data from Winter 1500 to Autumn 1900
+are reconstructions (Luterbacher et al. 2004, Xoplaki et al. 2005),
+data from 1901-2002 stem from Mitchell et al. (2004),
+Climatic Research Unit.
+Note that the reconstructions from 1500-1900 are entirely based on temperature related predictors and do
+not include station pressure series.
+
